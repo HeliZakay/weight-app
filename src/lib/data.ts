@@ -21,6 +21,25 @@ export async function getSettings(): Promise<Settings> {
   return prisma.settings.create({ data: { id: "singleton" } });
 }
 
+/** Default "Quick add" foods, auto-seeded the first time the Log screen loads. */
+const DEFAULT_PRESETS = [
+  { item: "Oatmeal & berries", grams: 320, kcal: 280 },
+  { item: "Greek yogurt", grams: 170, kcal: 150 },
+  { item: "Chicken salad", grams: 410, kcal: 520 },
+  { item: "Rice & veg bowl", grams: 350, kcal: 480 },
+  { item: "Banana", grams: 120, kcal: 105 },
+  { item: "Coffee w/ milk", grams: 240, kcal: 40 },
+];
+
+/** Ensures the saved-food presets exist (idempotent). */
+async function ensurePresets() {
+  const count = await prisma.savedFood.count();
+  if (count > 0) return;
+  await prisma.savedFood.createMany({
+    data: DEFAULT_PRESETS.map((p, i) => ({ ...p, sortOrder: i })),
+  });
+}
+
 /** Most-recent weight entry (canonical lb), or null if none logged yet. */
 async function latestWeightLb(): Promise<number | null> {
   const w = await prisma.entry.findFirst({
@@ -91,6 +110,7 @@ export async function getTodayData() {
 export async function getLogData() {
   const today = dayUTC();
   const settings = await getSettings();
+  await ensurePresets();
 
   const [sessions, meals, presets, lastWeight] = await Promise.all([
     prisma.entry.findMany({
