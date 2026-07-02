@@ -1,0 +1,93 @@
+// Weight & Movement Companion — data model
+// Single user, no auth. Weight stored canonically in POUNDS (lb); kg is a
+// display/input conversion only. Streak and week-movement counts are DERIVED
+// from movement entries at read time, never stored.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum EntryType {
+  WEIGHT
+  MOVEMENT
+  MEAL
+}
+
+enum MoveType {
+  DANCE
+  WORKOUT
+  OTHER
+}
+
+enum Units {
+  LB
+  KG
+}
+
+enum CoachTone {
+  GENTLE
+  STEADY
+  STRICT
+}
+
+/// Polymorphic log entry. `type` selects which of the nullable columns apply.
+model Entry {
+  id        String    @id @default(cuid())
+  /// Calendar day the entry belongs to (midnight, UTC-normalized).
+  day       DateTime  @db.Date
+  /// Exact moment it was logged (drives the "7:12 am" timestamp).
+  createdAt DateTime  @default(now())
+  type      EntryType
+
+  // WEIGHT
+  weightLb    Float?
+
+  // MOVEMENT
+  moveType    MoveType?
+  durationMin Int?
+  note        String?
+
+  // MEAL
+  item   String?
+  grams  Int?
+  kcal   Int?
+  macros Json?
+
+  @@index([day, type])
+  @@index([type, createdAt])
+}
+
+/// Single-row settings/goals table. Always id = "singleton".
+model Settings {
+  id               String    @id @default("singleton")
+  units            Units     @default(LB)
+  goalWeightLb     Float     @default(142)
+  calorieTarget    Int       @default(1800)
+  weeklyMoveTarget Int       @default(5)
+  coachTone        CoachTone @default(STRICT)
+  updatedAt        DateTime  @updatedAt
+}
+
+/// User-editable saved-food presets powering "Quick add".
+model SavedFood {
+  id        String @id @default(cuid())
+  item      String
+  grams     Int
+  kcal      Int
+  sortOrder Int    @default(0)
+}
+
+/// One cached coach message per day so it's stable across reloads.
+model CoachCheckin {
+  id      String    @id @default(cuid())
+  day     DateTime  @unique @db.Date
+  message String
+  tone    CoachTone
+  band    String
+}

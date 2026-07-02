@@ -1,26 +1,83 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   Design tokens — Weight & Movement Companion
+   All values from design-reference (402px phone viewport).
+   ============================================================ */
+@theme {
+  /* Colors */
+  --color-canvas: #e8dfcf; /* behind phone / device backdrop */
+  --color-paper: #f4eee4; /* screen background */
+  --color-surface: #fbf7f0; /* cards, inputs, bottom nav */
+  --color-surface-alt: #efe7d8; /* secondary cards, segmented track, steppers */
+  --color-hairline: #e4dbcb; /* borders / dividers */
+  --color-hairline-card: #ede4d4; /* card borders */
+  --color-ink: #33302b; /* primary text, dark cards */
+  --color-ink-muted: #8a8172; /* secondary text, labels */
+  --color-ink-faint: #a69c8a; /* tertiary text, inactive nav */
+  --color-placeholder: #b9af9c; /* input placeholders */
+  --color-clay: #c06b4e; /* primary action / active / over-budget / streak */
+  --color-clay-light: #e0a88f; /* coach emphasis on dark card */
+  --color-sage: #7c8b6f; /* positive / done / downward-trend */
+  --color-sand: #dfd3be; /* inactive chart bars */
+  --color-stepper: #5a5347; /* +/- glyphs */
+  --color-chevron: #c9bfad; /* chevrons / faint plus */
+
+  /* Fonts (bound to next/font variables in layout.tsx) */
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-hanken), system-ui, sans-serif;
+
+  /* Radii */
+  --radius-card: 22px;
+  --radius-card-lg: 24px;
+  --radius-input: 14px;
+  --radius-button: 16px;
+
+  /* Shadows */
+  --shadow-cta: 0 10px 22px -10px rgba(192, 107, 78, 0.6);
+  --shadow-move: 0 12px 24px -10px rgba(192, 107, 78, 0.6);
+  --shadow-phone: 0 40px 80px -24px rgba(60, 50, 35, 0.4);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Hidden scrollbar for the scrollable screen area */
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+input {
+  font-family: inherit;
+}
+input::placeholder {
+  color: var(--color-placeholder);
+}
+/* Strip number-input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }

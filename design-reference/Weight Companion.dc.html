@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #E8DFCF; font-family: 'Hanken Grotesk', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  .scr::-webkit-scrollbar { width: 0; height: 0; }
+  input { font-family: inherit; }
+  input::placeholder { color: #B9AF9C; }
+</style>
+</helmet>
+
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;">
+  <div style="width:402px; height:874px; background:#F4EEE4; border-radius:44px; box-shadow:0 40px 80px -24px rgba(60,50,35,0.4); overflow:hidden; display:flex; flex-direction:column; position:relative;">
+
+    <!-- status bar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 30px 6px; font-size:14px; font-weight:600; color:#33302B; flex:none;">
+      <span>9:41</span>
+      <span style="display:flex; gap:6px; align-items:center; opacity:0.85;">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="1" fill="#33302B"/><rect x="5" y="4" width="3" height="8" rx="1" fill="#33302B"/><rect x="10" y="1" width="3" height="11" rx="1" fill="#33302B"/><rect x="15" y="1" width="3" height="11" rx="1" fill="#33302B" opacity="0.3"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="1" y="1" width="20" height="10" rx="3" stroke="#33302B" stroke-width="1.2" opacity="0.5"/><rect x="3" y="3" width="14" height="6" rx="1.5" fill="#33302B"/><rect x="22" y="4" width="1.5" height="4" rx="0.75" fill="#33302B" opacity="0.5"/></svg>
+      </span>
+    </div>
+
+    <div class="scr" style="flex:1; overflow-y:auto; overflow-x:hidden;">
+
+      <!-- ================= TODAY ================= -->
+      <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:16px 24px 28px; display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; align-items:flex-end; justify-content:space-between;">
+          <div>
+            <div style="font-family:'Newsreader',serif; font-size:32px; color:#33302B; line-height:1;">{{ dayName }}</div>
+            <div style="font-size:14px; color:#8A8172; font-weight:500; margin-top:4px;">{{ dateLabel }} · close out your day</div>
+          </div>
+          <div style="text-align:center; background:#33302B; border-radius:18px; padding:10px 15px; color:#F4EEE4;">
+            <div style="font-family:'Newsreader',serif; font-size:26px; line-height:1;">{{ streak }}</div>
+            <div style="font-size:10px; letter-spacing:0.08em; text-transform:uppercase; opacity:0.7; margin-top:2px;">day streak</div>
+          </div>
+        </div>
+
+        <!-- weigh card -->
+        <sc-if value="{{ weightDone }}" hint-placeholder-val="{{ true }}">
+        <div onClick="{{ goWeightLog }}" style="cursor:pointer; background:#FBF7F0; border-radius:22px; padding:16px 18px; display:flex; align-items:center; gap:14px; border:1px solid #EDE4D4;">
+          <span style="width:38px; height:38px; border-radius:50%; background:#7C8B6F; display:inline-flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-10" stroke="#F4EEE4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#33302B; font-size:15px;">Weighed in</div>
+            <div style="font-size:13px; color:#8A8172;">{{ weightStr }} {{ unit }} · 7:12 am</div>
+          </div>
+          <span style="font-family:'Newsreader',serif; font-size:14px; color:#7C8B6F; font-weight:500;">done</span>
+        </div>
+        </sc-if>
+        <sc-if value="{{ weightOpen }}">
+        <div onClick="{{ goWeightLog }}" style="cursor:pointer; background:#FBF7F0; border-radius:22px; padding:16px 18px; display:flex; align-items:center; gap:14px; border:1px dashed #D8CDB8;">
+          <span style="width:38px; height:38px; border-radius:50%; background:#EFE7D8; display:inline-flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 109 9" stroke="#8A8172" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12l4-4" stroke="#8A8172" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#33302B; font-size:15px;">Weigh in — not yet</div>
+            <div style="font-size:13px; color:#8A8172;">Tap to log today's weight</div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#C9BFAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        </sc-if>
+
+        <!-- move card -->
+        <sc-if value="{{ movementOpen }}" hint-placeholder-val="{{ true }}">
+        <div onClick="{{ goMoveLog }}" style="cursor:pointer; background:#C06B4E; border-radius:22px; padding:18px; display:flex; align-items:center; gap:14px; box-shadow:0 12px 24px -10px rgba(192,107,78,0.6);">
+          <span style="width:38px; height:38px; border-radius:50%; background:rgba(244,238,228,0.22); display:inline-flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 12h12M12 6v12" stroke="#F4EEE4" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+          <div style="flex:1; color:#F4EEE4;">
+            <div style="font-weight:700; font-size:15px;">Move — not yet</div>
+            <div style="font-size:13px; opacity:0.85;">Tap to log a session</div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#F4EEE4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        </sc-if>
+        <sc-if value="{{ movementDone }}">
+        <div onClick="{{ goMoveLog }}" style="cursor:pointer; background:#FBF7F0; border-radius:22px; padding:16px 18px; display:flex; align-items:center; gap:14px; border:1px solid #EDE4D4;">
+          <span style="width:38px; height:38px; border-radius:50%; background:#7C8B6F; display:inline-flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-10" stroke="#F4EEE4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#33302B; font-size:15px;">Moved today</div>
+            <div style="font-size:13px; color:#8A8172;">{{ moveSummary }}</div>
+          </div>
+          <span style="font-family:'Newsreader',serif; font-size:14px; color:#7C8B6F; font-weight:500;">done</span>
+        </div>
+        </sc-if>
+
+        <!-- eat card -->
+        <div onClick="{{ goMealLog }}" style="cursor:pointer; background:#FBF7F0; border-radius:22px; padding:16px 18px; display:flex; align-items:center; gap:14px; border:1px solid #EDE4D4;">
+          <span style="width:38px; height:38px; border-radius:50%; background:#EFE7D8; display:inline-flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 4v16M8 4v6a3 3 0 01-3 3M16 4c-1.5 0-2.5 2-2.5 5s1 4 2.5 4m0 0v7m0-7l0-9" stroke="#8A8172" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#33302B; font-size:15px;">Meals logged</div>
+            <div style="font-size:13px; color:#8A8172;">{{ mealsCount }} today · {{ calConsumed }} kcal</div>
+          </div>
+          <span style="font-size:24px; color:#C9BFAD; font-weight:300;">+</span>
+        </div>
+
+        <!-- calories today -->
+        <div style="background:#FBF7F0; border-radius:22px; padding:18px 20px; border:1px solid #EDE4D4;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+            <span style="font-size:12px; color:#8A8172; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;">Calories today</span>
+            <span style="font-size:13px; color:#8A8172;">{{ calConsumed }} of {{ calTarget }} kcal</span>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:6px;"><span style="font-family:'Newsreader',serif; font-size:36px; line-height:1; color:{{ calNumColor }};">{{ calLeftAbs }}</span><span style="font-size:14px; color:#8A8172;">kcal {{ calLeftWord }}</span></div>
+          <div style="height:8px; background:#EFE7D8; border-radius:100px; margin-top:12px; overflow:hidden;"><div style="height:100%; width:{{ calPct }}; background:{{ calBarColor }}; border-radius:100px;"></div></div>
+        </div>
+
+        <!-- coach -->
+        <div style="margin-top:6px; background:#EFE7D8; border-radius:22px; padding:18px 20px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="width:24px; height:24px; border-radius:50%; background:#33302B; display:inline-flex; align-items:center; justify-content:center; font-family:'Newsreader',serif; font-size:13px; color:#F4EEE4;">C</span><span style="font-size:12px; font-weight:600; color:#8A8172; letter-spacing:0.03em; text-transform:uppercase;">Today's check-in</span></div>
+          <div style="font-family:'Newsreader',serif; font-size:19px; line-height:1.42; color:#33302B;">{{ coachLine }}</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ================= LOG ================= -->
+      <sc-if value="{{ isLog }}">
+      <div style="padding:16px 24px 28px;">
+        <div style="font-family:'Newsreader',serif; font-size:30px; color:#33302B; margin-bottom:14px;">Log</div>
+
+        <!-- tabs -->
+        <div style="display:flex; gap:4px; background:#EFE7D8; border-radius:14px; padding:4px; margin-bottom:20px;">
+          <div onClick="{{ tabWeight }}" style="flex:1; text-align:center; padding:9px 0; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; color:{{ wTabColor }}; background:{{ wTabBg }};">Weight</div>
+          <div onClick="{{ tabMovement }}" style="flex:1; text-align:center; padding:9px 0; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; color:{{ mTabColor }}; background:{{ mTabBg }};">Movement</div>
+          <div onClick="{{ tabMeals }}" style="flex:1; text-align:center; padding:9px 0; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; color:{{ fTabColor }}; background:{{ fTabBg }};">Meals</div>
+        </div>
+
+        <!-- weight tab -->
+        <sc-if value="{{ tabIsWeight }}">
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div style="text-align:center; padding:10px 0;">
+            <div style="font-size:13px; color:#8A8172; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">Today's weight</div>
+            <div style="display:flex; align-items:baseline; justify-content:center; gap:8px; margin-top:14px;">
+              <input type="number" inputMode="decimal" value="{{ weightInput }}" onChange="{{ onWeightInput }}" placeholder="148.2" style="width:190px; border:none; background:transparent; outline:none; text-align:center; font-family:'Newsreader',serif; font-size:64px; color:#33302B; border-bottom:2px solid #E4DBCB; padding-bottom:6px;">
+              <span style="font-family:'Newsreader',serif; font-size:24px; color:#8A8172;">{{ unit }}</span>
+            </div>
+            <div style="font-size:13px; color:#A69C8A; margin-top:14px;">Once a day. It gets timestamped automatically.</div>
+          </div>
+          <div onClick="{{ saveWeight }}" style="cursor:pointer; background:#33302B; color:#F4EEE4; text-align:center; padding:16px; border-radius:16px; font-weight:600; font-size:15px;">Save today's weight</div>
+          <div style="text-align:center; font-size:13px; color:#8A8172;">Last logged: {{ weightStr }} {{ unit }}, 7:12 am</div>
+        </div>
+        </sc-if>
+
+        <!-- movement tab -->
+        <sc-if value="{{ tabIsMovement }}">
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div>
+            <div style="font-size:13px; color:#8A8172; font-weight:600; margin-bottom:10px;">Type</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <div onClick="{{ typeDance }}" style="cursor:pointer; padding:10px 18px; border-radius:100px; font-size:14px; font-weight:600; color:{{ danceColor }}; background:{{ danceBg }}; border:1px solid {{ danceBorder }};">Dance</div>
+              <div onClick="{{ typeWorkout }}" style="cursor:pointer; padding:10px 18px; border-radius:100px; font-size:14px; font-weight:600; color:{{ workoutColor }}; background:{{ workoutBg }}; border:1px solid {{ workoutBorder }};">Workout</div>
+              <div onClick="{{ typeOther }}" style="cursor:pointer; padding:10px 18px; border-radius:100px; font-size:14px; font-weight:600; color:{{ otherColor }}; background:{{ otherBg }}; border:1px solid {{ otherBorder }};">Other</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px; color:#8A8172; font-weight:600; margin-bottom:8px;">Duration (minutes)</div>
+            <input type="number" inputMode="numeric" value="{{ moveDuration }}" onChange="{{ onMoveDuration }}" placeholder="45" style="width:100%; border:1px solid #E4DBCB; background:#FBF7F0; border-radius:14px; padding:14px 16px; font-size:16px; color:#33302B; outline:none;">
+          </div>
+          <div>
+            <div style="font-size:13px; color:#8A8172; font-weight:600; margin-bottom:8px;">Note (optional)</div>
+            <input type="text" value="{{ moveNote }}" onChange="{{ onMoveNote }}" placeholder="Felt strong today" style="width:100%; border:1px solid #E4DBCB; background:#FBF7F0; border-radius:14px; padding:14px 16px; font-size:16px; color:#33302B; outline:none;">
+          </div>
+          <div onClick="{{ logMovement }}" style="cursor:pointer; background:#C06B4E; color:#F4EEE4; text-align:center; padding:16px; border-radius:16px; font-weight:600; font-size:15px; box-shadow:0 10px 22px -10px rgba(192,107,78,0.6);">Log session · counts toward streak</div>
+          <sc-if value="{{ hasSessions }}">
+          <div>
+            <div style="font-size:13px; color:#8A8172; font-weight:600; margin:6px 0 10px;">Today's sessions</div>
+            <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="1">
+              <div style="display:flex; align-items:center; gap:12px; background:#FBF7F0; border:1px solid #EDE4D4; border-radius:14px; padding:12px 14px; margin-bottom:8px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:#7C8B6F;"></span>
+                <div style="flex:1;"><span style="font-weight:600; color:#33302B; font-size:14px;">{{ s.typeLabel }}</span> <span style="color:#8A8172; font-size:14px;">· {{ s.duration }} min</span></div>
+                <span style="font-size:13px; color:#A69C8A;">{{ s.note }}</span>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- meals tab -->
+        <sc-if value="{{ tabIsMeals }}">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div>
+            <div style="font-size:13px; color:#8A8172; font-weight:600; margin-bottom:10px;">Quick add · saved items</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+                <div onClick="{{ p.add }}" style="cursor:pointer; display:flex; align-items:center; gap:12px; background:#FBF7F0; border:1px solid #E4DBCB; border-radius:14px; padding:11px 14px;">
+                  <div style="flex:1;">
+                    <div style="font-weight:600; color:#33302B; font-size:14px;">{{ p.label }}</div>
+                    <div style="font-size:12px; color:#8A8172;">{{ p.grams }} g · {{ p.kcal }} kcal</div>
+                  </div>
+                  <span style="width:28px; height:28px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:19px; color:#5A5347; flex:none;">+</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; margin:2px 0;"><span style="flex:1; height:1px; background:#E4DBCB;"></span><span style="font-size:12px; color:#A69C8A; font-weight:600;">or add your own</span><span style="flex:1; height:1px; background:#E4DBCB;"></span></div>
+          <div style="display:flex; gap:10px;">
+            <input type="text" value="{{ mealItem }}" onChange="{{ onMealItem }}" placeholder="Item" style="flex:2; border:1px solid #E4DBCB; background:#FBF7F0; border-radius:14px; padding:14px 16px; font-size:16px; color:#33302B; outline:none;">
+            <input type="number" inputMode="numeric" value="{{ mealGrams }}" onChange="{{ onMealGrams }}" placeholder="grams" style="flex:1; min-width:0; border:1px solid #E4DBCB; background:#FBF7F0; border-radius:14px; padding:14px 12px; font-size:16px; color:#33302B; outline:none;">
+          </div>
+          <div>
+            <input type="number" inputMode="numeric" value="{{ mealKcal }}" onChange="{{ onMealKcal }}" placeholder="calories (optional)" style="width:100%; border:1px solid #E4DBCB; background:#FBF7F0; border-radius:14px; padding:14px 16px; font-size:16px; color:#33302B; outline:none;">
+          </div>
+          <div onClick="{{ addMeal }}" style="cursor:pointer; background:#33302B; color:#F4EEE4; text-align:center; padding:16px; border-radius:16px; font-weight:600; font-size:15px;">Add to today</div>
+          <div>
+            <div style="font-size:13px; color:#8A8172; font-weight:600; margin:6px 0 10px;">Today · {{ mealsCount }} logged</div>
+            <sc-for list="{{ meals }}" as="m" hint-placeholder-count="2">
+              <div style="display:flex; align-items:center; gap:12px; background:#FBF7F0; border:1px solid #EDE4D4; border-radius:14px; padding:13px 15px; margin-bottom:8px;">
+                <div style="flex:1;">
+                  <div style="font-weight:600; color:#33302B; font-size:14px;">{{ m.item }}</div>
+                  <div style="font-size:13px; color:#8A8172;">{{ m.grams }} g{{ m.kcalLabel }}</div>
+                </div>
+                <span style="font-size:12px; color:#B9AF9C;">{{ m.time }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ================= PROGRESS ================= -->
+      <sc-if value="{{ isProgress }}">
+      <div style="padding:16px 24px 28px; display:flex; flex-direction:column; gap:16px;">
+        <div style="font-family:'Newsreader',serif; font-size:30px; color:#33302B;">Progress</div>
+
+        <!-- weekly avg weight line -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:20px; border:1px solid #EDE4D4;">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;">
+            <div style="font-size:13px; color:#8A8172; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;">Weekly average</div>
+            <div style="font-size:13px; color:#7C8B6F; font-weight:700;">↓ 2.8 {{ unit }} · 6 wks</div>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:6px; margin:8px 0 14px;"><span style="font-family:'Newsreader',serif; font-size:44px; color:#33302B; line-height:1;">{{ weightStr }}</span><span style="font-size:15px; color:#8A8172;">{{ unit }}</span></div>
+          <svg width="100%" height="120" viewBox="0 0 320 120" preserveAspectRatio="none">
+            <line x1="0" y1="96" x2="320" y2="96" stroke="#C06B4E" stroke-width="1.2" stroke-dasharray="4 5" opacity="0.55"/>
+            <path d="M0 20 C 45 22, 65 34, 105 40 S 180 58, 220 66 S 290 84, 320 86" fill="none" stroke="#33302B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="320" cy="86" r="5" fill="#33302B"/>
+          </svg>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:#A69C8A; margin-top:6px;"><span>6 weeks ago</span><span style="color:#C06B4E; font-weight:600;">goal {{ goalWeight }}</span><span>now</span></div>
+        </div>
+
+        <!-- consistency -->
+        <div style="background:#33302B; border-radius:24px; padding:20px; color:#F4EEE4;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div>
+              <div style="font-size:12px; color:rgba(244,238,228,0.6); font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">Movement streak</div>
+              <div style="display:flex; align-items:baseline; gap:6px; margin-top:2px;"><span style="font-family:'Newsreader',serif; font-size:40px; line-height:1;">{{ streak }}</span><span style="font-size:14px; opacity:0.7;">days</span></div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:12px; color:rgba(244,238,228,0.6); font-weight:600;">This week</div>
+              <div style="font-family:'Newsreader',serif; font-size:24px; margin-top:2px;">{{ weekMoveCount }} / {{ weeklyMoveTarget }}</div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:6px;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><span style="width:26px; height:26px; border-radius:50%; background:#7C8B6F;"></span><span style="font-size:11px; opacity:0.6;">M</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><span style="width:26px; height:26px; border-radius:50%; background:#7C8B6F;"></span><span style="font-size:11px; opacity:0.6;">T</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><span style="width:26px; height:26px; border-radius:50%; background:rgba(244,238,228,0.14);"></span><span style="font-size:11px; opacity:0.6;">W</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><span style="width:26px; height:26px; border-radius:50%; background:#7C8B6F;"></span><span style="font-size:11px; opacity:0.6;">T</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><span style="width:26px; height:26px; border-radius:50%; background:#7C8B6F;"></span><span style="font-size:11px; opacity:0.6;">F</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><span style="width:26px; height:26px; border-radius:50%; background:#7C8B6F;"></span><span style="font-size:11px; opacity:0.6;">S</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+              <sc-if value="{{ movementDone }}" hint-placeholder-val="{{ true }}"><span style="width:26px; height:26px; border-radius:50%; background:#C06B4E; box-shadow:0 0 0 3px rgba(192,107,78,0.3);"></span></sc-if>
+              <sc-if value="{{ movementOpen }}"><span style="width:26px; height:26px; border-radius:50%; background:transparent; border:2px dashed rgba(244,238,228,0.35);"></span></sc-if>
+              <span style="font-size:11px; opacity:0.6;">S</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- movement frequency -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:20px; border:1px solid #EDE4D4;">
+          <div style="font-size:13px; color:#8A8172; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:16px;">Sessions per week</div>
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:10px; height:96px;">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;"><div style="width:100%; height:44px; background:#DFD3BE; border-radius:7px;"></div><span style="font-size:11px; color:#A69C8A;">W1</span></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;"><div style="width:100%; height:58px; background:#DFD3BE; border-radius:7px;"></div><span style="font-size:11px; color:#A69C8A;">W2</span></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;"><div style="width:100%; height:30px; background:#DFD3BE; border-radius:7px;"></div><span style="font-size:11px; color:#A69C8A;">W3</span></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;"><div style="width:100%; height:72px; background:#DFD3BE; border-radius:7px;"></div><span style="font-size:11px; color:#A69C8A;">W4</span></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;"><div style="width:100%; height:58px; background:#DFD3BE; border-radius:7px;"></div><span style="font-size:11px; color:#A69C8A;">W5</span></div>
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;"><div style="width:100%; height:44px; background:#C06B4E; border-radius:7px;"></div><span style="font-size:11px; color:#C06B4E; font-weight:600;">now</span></div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ================= GOALS ================= -->
+      <sc-if value="{{ isGoals }}">
+      <div style="padding:16px 24px 28px; display:flex; flex-direction:column; gap:16px;">
+        <div style="font-family:'Newsreader',serif; font-size:30px; color:#33302B;">Goals &amp; Settings</div>
+
+        <!-- goal weight -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:20px; border:1px solid #EDE4D4;">
+          <div style="font-size:13px; color:#8A8172; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;">Goal weight</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px;">
+            <div onClick="{{ goalWeightDown }}" style="cursor:pointer; width:44px; height:44px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:22px; color:#5A5347;">−</div>
+            <div style="text-align:center;"><span style="font-family:'Newsreader',serif; font-size:44px; color:#33302B;">{{ goalWeight }}</span><span style="font-size:16px; color:#8A8172; margin-left:4px;">{{ unit }}</span></div>
+            <div onClick="{{ goalWeightUp }}" style="cursor:pointer; width:44px; height:44px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:22px; color:#5A5347;">+</div>
+          </div>
+          <div style="text-align:center; font-size:13px; color:#7C8B6F; font-weight:600; margin-top:10px;">{{ toGoal }} {{ unit }} to go · your target, your pace</div>
+        </div>
+
+        <!-- weekly movement target -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:20px; border:1px solid #EDE4D4;">
+          <div style="font-size:13px; color:#8A8172; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;">Weekly movement target</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px;">
+            <div onClick="{{ moveTargetDown }}" style="cursor:pointer; width:44px; height:44px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:22px; color:#5A5347;">−</div>
+            <div style="text-align:center;"><span style="font-family:'Newsreader',serif; font-size:44px; color:#33302B;">{{ weeklyMoveTarget }}</span><span style="font-size:16px; color:#8A8172; margin-left:4px;">/ week</span></div>
+            <div onClick="{{ moveTargetUp }}" style="cursor:pointer; width:44px; height:44px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:22px; color:#5A5347;">+</div>
+          </div>
+        </div>
+
+        <!-- daily calorie target -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:20px; border:1px solid #EDE4D4;">
+          <div style="font-size:13px; color:#8A8172; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;">Daily calorie target</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:12px;">
+            <div onClick="{{ calTargetDown }}" style="cursor:pointer; width:44px; height:44px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:22px; color:#5A5347;">−</div>
+            <div style="text-align:center;"><span style="font-family:'Newsreader',serif; font-size:44px; color:#33302B;">{{ calTarget }}</span><span style="font-size:16px; color:#8A8172; margin-left:4px;">kcal</span></div>
+            <div onClick="{{ calTargetUp }}" style="cursor:pointer; width:44px; height:44px; border-radius:50%; background:#EFE7D8; display:flex; align-items:center; justify-content:center; font-size:22px; color:#5A5347;">+</div>
+          </div>
+          <div style="text-align:center; font-size:13px; color:#8A8172; margin-top:10px;">Your number — adjust it anytime.</div>
+        </div>
+
+        <!-- units -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:18px 20px; border:1px solid #EDE4D4; display:flex; align-items:center; justify-content:space-between;">
+          <div style="font-size:15px; font-weight:600; color:#33302B;">Units</div>
+          <div style="display:flex; gap:4px; background:#EFE7D8; border-radius:12px; padding:4px;">
+            <div onClick="{{ setLb }}" style="cursor:pointer; padding:8px 18px; border-radius:9px; font-size:13px; font-weight:600; color:{{ lbColor }}; background:{{ lbBg }};">lb</div>
+            <div onClick="{{ setKg }}" style="cursor:pointer; padding:8px 18px; border-radius:9px; font-size:13px; font-weight:600; color:{{ kgColor }}; background:{{ kgBg }};">kg</div>
+          </div>
+        </div>
+
+        <!-- coach tone -->
+        <div style="background:#FBF7F0; border-radius:24px; padding:18px 20px; border:1px solid #EDE4D4;">
+          <div style="font-size:15px; font-weight:600; color:#33302B; margin-bottom:4px;">Coach tone</div>
+          <div style="font-size:13px; color:#8A8172; margin-bottom:14px;">How direct should your daily check-in be?</div>
+          <div style="display:flex; gap:8px;">
+            <div onClick="{{ setGentle }}" style="cursor:pointer; flex:1; text-align:center; padding:11px 0; border-radius:12px; font-size:13px; font-weight:600; color:{{ gentleColor }}; background:{{ gentleBg }}; border:1px solid {{ gentleBorder }};">Gentle</div>
+            <div onClick="{{ setSteady }}" style="cursor:pointer; flex:1; text-align:center; padding:11px 0; border-radius:12px; font-size:13px; font-weight:600; color:{{ steadyColor }}; background:{{ steadyBg }}; border:1px solid {{ steadyBorder }};">Steady</div>
+            <div onClick="{{ setStrict }}" style="cursor:pointer; flex:1; text-align:center; padding:11px 0; border-radius:12px; font-size:13px; font-weight:600; color:{{ strictColor }}; background:{{ strictBg }}; border:1px solid {{ strictBorder }};">Strict</div>
+          </div>
+        </div>
+
+        <!-- export -->
+        <div onClick="{{ doExport }}" style="cursor:pointer; background:#FBF7F0; border-radius:24px; padding:18px 20px; border:1px solid #EDE4D4; display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <div style="font-size:15px; font-weight:600; color:#33302B;">Export my data</div>
+            <div style="font-size:13px; color:#8A8172; margin-top:2px;">{{ exportLabel }}</div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3v12M12 15l-4-4M12 15l4-4M5 19h14" stroke="#8A8172" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <div style="text-align:center; font-size:12px; color:#A69C8A; line-height:1.5; padding:4px 10px;">This app sets no calorie targets and prescribes no deficits. The numbers are yours.</div>
+      </div>
+      </sc-if>
+
+    </div>
+
+    <!-- bottom nav -->
+    <div style="display:flex; justify-content:space-around; align-items:center; padding:12px 20px 26px; background:#FBF7F0; border-top:1px solid #E4DBCB; flex:none;">
+      <div onClick="{{ goToday }}" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; color:{{ navToday }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v8a1 1 0 01-1 1h-5v-5h-4v5H5a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span style="font-size:11px; font-weight:600;">Today</span></div>
+      <div onClick="{{ goLog }}" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; color:{{ navLog }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span style="font-size:11px; font-weight:600;">Log</span></div>
+      <div onClick="{{ goProgress }}" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; color:{{ navProgress }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 18l5-6 4 3 6-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:11px; font-weight:600;">Progress</span></div>
+      <div onClick="{{ goGoals }}" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; color:{{ navGoals }};"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></svg><span style="font-size:11px; font-weight:600;">Goals</span></div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'today',
+    logTab: 'weight',
+    units: 'lb',
+    weightToday: 148.2,
+    weightLoggedToday: true,
+    movementLoggedToday: false,
+    streak: 12,
+    goalWeight: 142,
+    calorieTarget: 1800,
+    weeklyMoveTarget: 5,
+    weekMoveCount: 3,
+    coachTone: 'strict',
+    weightInput: '',
+    moveType: 'dance',
+    moveDuration: '',
+    moveNote: '',
+    sessions: [],
+    mealItem: '',
+    mealGrams: '',
+    mealKcal: '',
+    meals: [
+      { item: 'Oatmeal & berries', grams: 320, kcal: 280, time: '7:40 am' },
+      { item: 'Chicken salad', grams: 410, kcal: 520, time: '1:15 pm' },
+    ],
+    exported: false,
+  };
+
+  go(screen) { this.setState({ screen }); }
+
+  typeLabel(t) {
+    return { dance: 'Dance', workout: 'Workout', other: 'Other' }[t] || 'Session';
+  }
+
+  addPreset(p) {
+    this.setState(s => ({ meals: [...s.meals, { item: p.label, grams: p.grams, kcal: p.kcal, time: 'now' }] }));
+  }
+
+  coach() {
+    const { coachTone, calorieTarget } = this.state;
+    const consumed = this.state.meals.reduce((a, m) => a + (typeof m.kcal === 'number' ? m.kcal : 0), 0);
+    const left = calorieTarget - consumed;
+    const over = Math.abs(left);
+    const band = left < 0 ? 'over' : (left <= 200 ? 'tight' : 'room');
+    const lines = {
+      gentle: {
+        room: `${left} kcal left of your ${calorieTarget} today. Nice pace — no pressure, just keep logging what you eat.`,
+        tight: `About ${left} kcal left. Getting close — a lighter evening will land you right on target.`,
+        over: `A little over today (${over} kcal). No guilt — tomorrow's a fresh ${calorieTarget}.`,
+      },
+      steady: {
+        room: `${left} of ${calorieTarget} kcal still yours today. Good room — keep logging and stay mindful tonight.`,
+        tight: `${left} kcal left. You're near the line — ease off from here and you've got it.`,
+        over: `${over} over today. It happens. Note it and aim for ${calorieTarget} tomorrow.`,
+      },
+      strict: {
+        room: `${left} kcal left of ${calorieTarget}. Plenty of room — don't waste it and don't overshoot. Log every bite.`,
+        tight: `Only ${left} kcal left today. You're on the line — hold it. No late-night discounts.`,
+        over: `${over} over budget. That's the math, and the math doesn't negotiate. Reset tomorrow at ${calorieTarget}. No excuses.`,
+      },
+    };
+    return lines[coachTone][band];
+  }
+
+  saveWeight() {
+    const v = parseFloat(this.state.weightInput);
+    if (!isNaN(v) && v > 0) {
+      this.setState({ weightToday: v, weightLoggedToday: true, weightInput: '', screen: 'today' });
+    }
+  }
+
+  logMovement() {
+    const dur = parseInt(this.state.moveDuration, 10);
+    const session = {
+      typeLabel: this.typeLabel(this.state.moveType),
+      duration: isNaN(dur) ? 30 : dur,
+      note: this.state.moveNote || '',
+    };
+    const wasOpen = !this.state.movementLoggedToday;
+    this.setState(s => ({
+      sessions: [...s.sessions, session],
+      movementLoggedToday: true,
+      streak: wasOpen ? s.streak + 1 : s.streak,
+      weekMoveCount: wasOpen ? s.weekMoveCount + 1 : s.weekMoveCount,
+      moveDuration: '',
+      moveNote: '',
+      screen: 'today',
+    }));
+  }
+
+  addMeal() {
+    if (!this.state.mealItem.trim()) return;
+    const g = parseInt(this.state.mealGrams, 10);
+    const k = parseInt(this.state.mealKcal, 10);
+    const meal = {
+      item: this.state.mealItem.trim(),
+      grams: isNaN(g) ? '—' : g,
+      kcal: isNaN(k) ? null : k,
+      time: 'now',
+    };
+    this.setState(s => ({ meals: [...s.meals, meal], mealItem: '', mealGrams: '', mealKcal: '' }));
+  }
+
+  seg(active) {
+    return active
+      ? { color: '#33302B', bg: '#FBF7F0', border: '#C06B4E' }
+      : { color: '#8A8172', bg: 'transparent', border: '#E4DBCB' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const on = '#C06B4E', off = '#A69C8A';
+    const solid = { color: '#F4EEE4', bg: '#33302B' };
+    const tabActive = { color: '#33302B', bg: '#FBF7F0' };
+    const tabIdle = { color: '#8A8172', bg: 'transparent' };
+    const tw = s.logTab === 'weight' ? tabActive : tabIdle;
+    const tm = s.logTab === 'movement' ? tabActive : tabIdle;
+    const tf = s.logTab === 'meals' ? tabActive : tabIdle;
+    const chip = (t) => this.seg(s.moveType === t);
+    const dc = chip('dance'), wo = chip('workout'), ot = chip('other');
+    const consumed = s.meals.reduce((a, m) => a + (typeof m.kcal === 'number' ? m.kcal : 0), 0);
+    const leftRaw = s.calorieTarget - consumed;
+    const over = leftRaw < 0;
+    const presetData = [
+      { label: 'Oatmeal & berries', grams: 320, kcal: 280 },
+      { label: 'Greek yogurt', grams: 170, kcal: 150 },
+      { label: 'Chicken salad', grams: 410, kcal: 520 },
+      { label: 'Rice & veg bowl', grams: 350, kcal: 480 },
+      { label: 'Banana', grams: 120, kcal: 105 },
+      { label: 'Coffee w/ milk', grams: 240, kcal: 40 },
+    ];
+    const tone = (t) => this.seg(s.coachTone === t);
+    const gt = tone('gentle'), st = tone('steady'), sr = tone('strict');
+    const lbA = s.units === 'lb', kgA = s.units === 'kg';
+    const lastSession = s.sessions[s.sessions.length - 1];
+
+    return {
+      // screens
+      isToday: s.screen === 'today', isLog: s.screen === 'log',
+      isProgress: s.screen === 'progress', isGoals: s.screen === 'goals',
+      goToday: () => this.go('today'), goLog: () => this.go('log'),
+      goProgress: () => this.go('progress'), goGoals: () => this.go('goals'),
+      navToday: s.screen === 'today' ? on : off,
+      navLog: s.screen === 'log' ? on : off,
+      navProgress: s.screen === 'progress' ? on : off,
+      navGoals: s.screen === 'goals' ? on : off,
+
+      // today
+      dayName: 'Wednesday', dateLabel: 'July 2',
+      streak: s.streak, unit: s.units,
+      weightStr: s.weightToday.toFixed(1),
+      weightDone: s.weightLoggedToday, weightOpen: !s.weightLoggedToday,
+      movementDone: s.movementLoggedToday, movementOpen: !s.movementLoggedToday,
+      moveSummary: lastSession ? `${lastSession.typeLabel} · ${lastSession.duration} min` : 'Session logged',
+      mealsCount: s.meals.length,
+      coachLine: this.coach(),
+      goWeightLog: () => this.setState({ screen: 'log', logTab: 'weight' }),
+      goMoveLog: () => this.setState({ screen: 'log', logTab: 'movement' }),
+      goMealLog: () => this.setState({ screen: 'log', logTab: 'meals' }),
+
+      // log tabs
+      tabWeight: () => this.setState({ logTab: 'weight' }),
+      tabMovement: () => this.setState({ logTab: 'movement' }),
+      tabMeals: () => this.setState({ logTab: 'meals' }),
+      tabIsWeight: s.logTab === 'weight', tabIsMovement: s.logTab === 'movement', tabIsMeals: s.logTab === 'meals',
+      wTabColor: tw.color, wTabBg: tw.bg, mTabColor: tm.color, mTabBg: tm.bg, fTabColor: tf.color, fTabBg: tf.bg,
+
+      // weight form
+      weightInput: s.weightInput,
+      onWeightInput: (e) => this.setState({ weightInput: e.target.value }),
+      saveWeight: () => this.saveWeight(),
+
+      // movement form
+      typeDance: () => this.setState({ moveType: 'dance' }),
+      typeWorkout: () => this.setState({ moveType: 'workout' }),
+      typeOther: () => this.setState({ moveType: 'other' }),
+      danceColor: dc.color, danceBg: dc.bg, danceBorder: dc.border,
+      workoutColor: wo.color, workoutBg: wo.bg, workoutBorder: wo.border,
+      otherColor: ot.color, otherBg: ot.bg, otherBorder: ot.border,
+      moveDuration: s.moveDuration, moveNote: s.moveNote,
+      onMoveDuration: (e) => this.setState({ moveDuration: e.target.value }),
+      onMoveNote: (e) => this.setState({ moveNote: e.target.value }),
+      logMovement: () => this.logMovement(),
+      hasSessions: s.sessions.length > 0, sessions: s.sessions,
+
+      // meals form
+      mealItem: s.mealItem, mealGrams: s.mealGrams, mealKcal: s.mealKcal,
+      onMealItem: (e) => this.setState({ mealItem: e.target.value }),
+      onMealGrams: (e) => this.setState({ mealGrams: e.target.value }),
+      onMealKcal: (e) => this.setState({ mealKcal: e.target.value }),
+      addMeal: () => this.addMeal(),
+      meals: s.meals.map(m => ({ ...m, kcalLabel: m.kcal != null ? ` · ${m.kcal} kcal` : '' })),
+      presets: presetData.map(p => ({ ...p, add: () => this.addPreset(p) })),
+
+      // calories
+      calTarget: s.calorieTarget,
+      calConsumed: consumed,
+      calLeftAbs: Math.abs(leftRaw),
+      calLeftWord: over ? 'over' : 'left',
+      calPct: Math.min(100, Math.round((consumed / s.calorieTarget) * 100)) + '%',
+      calNumColor: over ? '#C06B4E' : '#33302B',
+      calBarColor: over ? '#C06B4E' : '#7C8B6F',
+      calTargetUp: () => this.setState(p => ({ calorieTarget: p.calorieTarget + 50 })),
+      calTargetDown: () => this.setState(p => ({ calorieTarget: Math.max(800, p.calorieTarget - 50) })),
+
+      // progress
+      weekMoveCount: s.weekMoveCount, weeklyMoveTarget: s.weeklyMoveTarget,
+      goalWeight: s.goalWeight,
+
+      // goals
+      toGoal: Math.abs(s.weightToday - s.goalWeight).toFixed(1),
+      goalWeightUp: () => this.setState(p => ({ goalWeight: p.goalWeight + 1 })),
+      goalWeightDown: () => this.setState(p => ({ goalWeight: p.goalWeight - 1 })),
+      moveTargetUp: () => this.setState(p => ({ weeklyMoveTarget: Math.min(7, p.weeklyMoveTarget + 1) })),
+      moveTargetDown: () => this.setState(p => ({ weeklyMoveTarget: Math.max(1, p.weeklyMoveTarget - 1) })),
+      setLb: () => this.setState({ units: 'lb' }), setKg: () => this.setState({ units: 'kg' }),
+      lbColor: lbA ? '#33302B' : '#8A8172', lbBg: lbA ? '#FBF7F0' : 'transparent',
+      kgColor: kgA ? '#33302B' : '#8A8172', kgBg: kgA ? '#FBF7F0' : 'transparent',
+      setGentle: () => this.setState({ coachTone: 'gentle' }),
+      setSteady: () => this.setState({ coachTone: 'steady' }),
+      setStrict: () => this.setState({ coachTone: 'strict' }),
+      gentleColor: gt.color, gentleBg: gt.bg, gentleBorder: gt.border,
+      steadyColor: st.color, steadyBg: st.bg, steadyBorder: st.border,
+      strictColor: sr.color, strictBg: sr.bg, strictBorder: sr.border,
+      doExport: () => this.setState({ exported: true }),
+      exportLabel: s.exported ? 'Exported ✓ — check your files' : 'Download all entries as CSV',
+    };
+  }
+}
+</script>
+</body>
+</html>
